@@ -1,3 +1,17 @@
+# Debugprobe rp2040-zero
+
+It's work in proggres port for cheap ~2$ board with extra support of on-board rgb led.
+
+Done:
+    -Fix problem with not working firmware after upload and reset. PICO_XOSC_STARTUP_DELAY_MULTIPLIER is solution.
+
+To-Do:
+    -Change ports for easy access
+    -Led support
+
+
+
+
 # Debugprobe
 
 Firmware source for the Raspberry Pi Debug Probe SWD/UART accessory. Can also be run on a Raspberry Pi Pico.
