@@ -3,13 +3,22 @@
 It's work in proggres port for cheap ~2$ board with extra support of on-board rgb led.
 
 Done:
-    -Fix problem with not working firmware after upload and reset. PICO_XOSC_STARTUP_DELAY_MULTIPLIER is solution.
+- Fix problem with not working firmware after upload and reset. PICO_XOSC_STARTUP_DELAY_MULTIPLIER is solution.
+- Change ports for easy access
 
 To-Do:
-    -Change ports for easy access
-    -Led support
+- Led support
 
-
+Pinout:
+```
+GP8     TX
+GP9     RX
+GP10    SWCLK
+GP11    SWDIO
+GP12    GND
+GP13    GND
+GP14    3V3
+```
 
 
 # Debugprobe

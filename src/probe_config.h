@@ -67,6 +67,8 @@ do { \
 
 #ifdef DEBUG_ON_PICO 
 #include "board_pico_config.h"
+#elif defined(DEBUG_ON_ZERO)
+#include "board_rp2040-zero.h"
 #else
 #include "board_debug_probe_config.h"
 #endif
