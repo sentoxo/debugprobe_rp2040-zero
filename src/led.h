@@ -27,5 +27,8 @@
 #define LED_H
 
 void led_init(void);
-
+void put_rgb(uint8_t red, uint8_t green, uint8_t blue);
+void led_red_set(uint8_t set);
+void led_green_set(uint8_t set);
+void led_blue_set(uint8_t set);
 #endif

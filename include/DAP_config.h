@@ -505,6 +505,13 @@ __STATIC_INLINE void LED_CONNECTED_OUT (uint32_t bit) {
 #ifdef PROBE_DAP_CONNECTED_LED
   gpio_put(PROBE_DAP_CONNECTED_LED, bit);
 #endif
+#ifdef DEBUG_ON_ZERO
+        extern void led_green_set(uint8_t set);
+        if(bit)
+            led_green_set(0xFF);
+        else
+            led_green_set(0x00);
+#endif
 }
 
 /** Debug Unit: Set status Target Running LED.

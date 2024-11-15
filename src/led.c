@@ -28,6 +28,48 @@
 
 #include "probe_config.h"
 
+#ifdef DEBUG_ON_ZERO
+#include "hardware/pio.h"
+#include "hardware/clocks.h"
+#include "ws2812.pio.h"
+#include <stdio.h>
+
+static uint8_t red_s, green_s, blue_s;
+
+void put_pixel(uint32_t pixel_grb)
+{
+    pio_sm_put_blocking(pio1, 0, pixel_grb << 8u);
+}
+
+void led_red_set(uint8_t set){
+    if(set != red_s){
+        red_s = set;
+        put_pixel((green_s << 16) | (red_s << 8) | (blue_s << 0));
+    }
+}
+
+void led_green_set(uint8_t set){
+    if(set != green_s){
+        green_s = set;
+        put_pixel((green_s << 16) | (red_s << 8) | (blue_s << 0));
+    }
+}
+
+void led_blue_set(uint8_t set){
+    if(set != blue_s){
+        blue_s = set;
+        put_pixel((green_s << 16) | (red_s << 8) | (blue_s << 0));
+    }
+}
+
+void led_init(void) {
+    PIO pio = pio1;
+    int sm = 0;
+    uint offset = pio_add_program(pio, &ws2812_program);
+    ws2812_program_init(pio, sm, offset, 16, 800000, true);
+}
+#else
+
 void led_init(void) {
 #ifdef PROBE_USB_CONNECTED_LED
     gpio_init(PROBE_USB_CONNECTED_LED);
@@ -50,3 +92,4 @@ void led_init(void) {
     gpio_set_dir(PROBE_UART_TX_LED, GPIO_OUT);
 #endif
 }
+#endif

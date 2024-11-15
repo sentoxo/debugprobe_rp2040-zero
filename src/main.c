@@ -72,6 +72,12 @@ void usb_thread(void *ptr)
         else
             gpio_put(PROBE_USB_CONNECTED_LED, 0);
 #endif
+#ifdef DEBUG_ON_ZERO
+        if(tud_ready())
+            led_red_set(0xFF);
+        else
+            led_red_set(0x10);
+#endif
         // Go to sleep for up to a tick if nothing to do
         if (!tud_task_event_ready())
             xTaskDelayUntil(&wake, 1);

@@ -25,6 +25,8 @@ add_executable(debugprobe
         src/tusb_edpt_handler.c
 )
 
+pico_generate_pio_header(debugprobe ${CMAKE_CURRENT_LIST_DIR}/src/ws2812.pio OUTPUT_DIR ${CMAKE_CURRENT_LIST_DIR}/generated)
+
 target_sources(debugprobe PRIVATE
         CMSIS_5/CMSIS/DAP/Firmware/Source/DAP.c
         CMSIS_5/CMSIS/DAP/Firmware/Source/JTAG_DP.c
