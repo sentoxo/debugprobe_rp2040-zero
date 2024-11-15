@@ -1,15 +1,13 @@
 # Debugprobe rp2040-zero
 
-It's work in proggres port for cheap ~2$ board with extra support of on-board rgb led.
+It's port for cheap ~2$ board with extra support of on-board rgb led.
 
-Done:
+### Done:
 - Fix problem with not working firmware after upload and reset. PICO_XOSC_STARTUP_DELAY_MULTIPLIER is solution.
 - Change ports for easy access
+- Add built-in led support
 
-To-Do:
-- Led support
-
-Pinout:
+### Pinout:
 ```
 GP8     TX
 GP9     RX
@@ -20,6 +18,22 @@ GP13    GND
 GP14    3V3
 ```
 
+![probe_image](img1.jpg)
+
+![probe_image](img2.jpg)
+
+### Led legend:
+- Dimm red: power on, bright red: usb comm.
+- Green: Flashing/Debugging
+- Blue: RX Serial
+
+### How to make it
+If you wanna compile it, follow the guidelines in chapter 'Hacking' below and compile with "cmake -DDEBUG_ON_ZERO=ON ..".
+Binary uf2 is for download in relese tab. Connecting pins GP13/GP14 to gnd/3v3 is optional if you want use board as power supply.
+
+### Links
+[Information about the RP2040-Zero board with pinouts](https://www.waveshare.com/wiki/RP2040-Zero)
+[3D model of case](https://www.thingiverse.com/thing:6832908)
 
 # Debugprobe
 
