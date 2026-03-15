@@ -98,8 +98,21 @@ void dev_mon(void *ptr)
     } while (1);
 }
 
+void tud_event_hook_cb(uint8_t rhport, uint32_t eventid, bool in_isr)
+{
+  (void) rhport;
+  (void) eventid;
+  BaseType_t blah;
+  if (in_isr) {
+    xTaskNotifyFromISR(tud_taskhandle, 0, 0, &blah);
+  } else {
+    xTaskNotify(tud_taskhandle, 0, 0);
+  }
+}
+
 void usb_thread(void *ptr)
 {
+  uint32_t cmd;
 #ifdef PROBE_USB_CONNECTED_LED
     gpio_init(PROBE_USB_CONNECTED_LED);
     gpio_set_dir(PROBE_USB_CONNECTED_LED, GPIO_OUT);
@@ -123,9 +136,10 @@ void usb_thread(void *ptr)
         // If suspended or disconnected, delay for 1ms (20 ticks)
         if (tud_suspended() || !tud_connected())
             xTaskDelayUntil(&wake, 20);
-        // Go to sleep for up to a tick if nothing to do
+        // Go to sleep if nothing to do
         else if (!tud_task_event_ready())
-            xTaskDelayUntil(&wake, 1);
+          xTaskNotifyWait(0, 0xFFFFFFFFu, &cmd, 1);
+
     } while (1);
 }
 
@@ -150,8 +164,14 @@ int main(void) {
 
     if (THREADED) {
         xTaskCreate(usb_thread, "TUD", configMINIMAL_STACK_SIZE, NULL, TUD_TASK_PRIO, &tud_taskhandle);
+#if (configNUMBER_OF_CORES > 1)
+        vTaskCoreAffinitySet(tud_taskhandle, (1 << 0));
+#endif
 #if PICO_RP2040
         xTaskCreate(dev_mon, "WDOG", configMINIMAL_STACK_SIZE, NULL, TUD_TASK_PRIO, &mon_taskhandle);
+#if (configNUMBER_OF_CORES > 1)
+        vTaskCoreAffinitySet(mon_taskhandle, (1 << 0));
+#endif
 #endif
         vTaskStartScheduler();
     }
@@ -284,7 +304,11 @@ void tud_mount_cb(void)
     xTaskCreate(dap_thread, "DAP", configMINIMAL_STACK_SIZE, NULL, DAP_TASK_PRIO, &dap_taskhandle);
     /* Autobaud detection using PIO as a frequency counter */
     xTaskCreate(autobaud_thread, "ABR", configMINIMAL_STACK_SIZE, NULL, AUTOBAUD_TASK_PRIO, &autobaud_taskhandle);
+#if(configNUMBER_OF_CORES > 1)
     vTaskCoreAffinitySet(autobaud_taskhandle, (1 << 1));
+    vTaskCoreAffinitySet(dap_taskhandle, (1 << 1));
+    vTaskCoreAffinitySet(uart_taskhandle, (1 << 0));
+#endif
     was_configured = 1;
   }
 }
